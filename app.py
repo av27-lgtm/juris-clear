@@ -1,98 +1,92 @@
 import streamlit as st
 
-# 1. СЛОВАРЬ ПЕРЕВОДОВ
+# 1. КОНФИГУРАЦИЯ И КУРСЫ ВАЛЮТ (Примерные на сегодня)
+USD_TO_AMD = 400  # 1$ = 400 драм
+USD_TO_RUB = 90   # 1$ = 90 руб
+
+# 2. СЛОВАРЬ (Теперь со всеми данными и валютами)
 translations = {
-    "Русский": {
-        "title": "JurisClear AI",
-        "subtitle": "Умный аудит юридических рисков",
-        "select_plan": "Выберите тарифный план:",
-        "one_time": "📄 Разовый аудит",
-        "pro": "👑 Безлимит (Pro)",
-        "buy": "Купить доступ",
-        "upload": "Загрузите договор в PDF",
-        "demo_tab": "📝 Пример отчета",
-        "main_tab": "🚀 Анализ",
-        "free_advice": "💡 Совет: Всегда проверяйте пункт о 'форс-мажоре' и 'порядке расторжения'.",
-        "risk_score": "Оценка риска: 7/10 (Требуется анализ)",
-        "bait_text": "Хотите узнать, почему оценка риска высокая? Оплатите полный отчет."
-    },
     "English": {
-        "title": "JurisClear AI",
-        "subtitle": "Smart Legal Risk Audit",
-        "select_plan": "Select your plan:",
-        "one_time": "📄 Single Audit",
-        "pro": "👑 Unlimited (Pro)",
-        "buy": "Buy Access",
-        "upload": "Upload contract (PDF)",
-        "demo_tab": "📝 Sample Report",
-        "main_tab": "🚀 Analysis",
-        "free_advice": "💡 Tip: Always check 'force majeure' and 'termination' clauses.",
-        "risk_score": "Risk Score: 7/10 (Action Required)",
-        "bait_text": "Want to know why the risk score is high? Get the full report."
+        "cur": "$", "rate": 1, "lang_code": "EN",
+        "title": "⚖️ JurisClear AI",
+        "subtitle": "Next-Gen Legal Document Audit",
+        "one_time": "Single Audit", "pro": "Unlimited Pro",
+        "price_9": "9", "price_29": "29",
+        "buy": "Get Started", "upload": "Upload PDF contract",
+        "demo_tab": "📝 Sample Report", "main_tab": "🚀 Analysis",
+        "demo_content": "🔴 **Critical Risk:** Clause 4.2 allows price increases without notice.\n\n💡 **Advice:** Negotiate a 30-day notice period.",
+        "risk_wait": "Waiting for document...",
+        "mobile_tip": "Best viewed in portrait mode on mobile."
+    },
+    "Русский": {
+        "cur": "₽", "rate": USD_TO_RUB, "lang_code": "RU",
+        "title": "⚖️ JurisClear AI",
+        "subtitle": "Юридический аудит нового поколения",
+        "one_time": "Разовый аудит", "pro": "Безлимит Pro",
+        "price_9": str(9 * USD_TO_RUB), "price_29": str(29 * USD_TO_RUB),
+        "buy": "Купить доступ", "upload": "Загрузите PDF договор",
+        "demo_tab": "📝 Пример отчета", "main_tab": "🚀 Анализ",
+        "demo_content": "🔴 **Критический риск:** Пункт 4.2 позволяет повышать цену без уведомления.\n\n💡 **Совет:** Согласуйте уведомление за 30 дней.",
+        "risk_wait": "Ожидание документа...",
+        "mobile_tip": "Рекомендуется вертикальный режим на телефоне."
     },
     "Հայերեն": {
-        "title": "JurisClear AI",
-        "subtitle": "Իրավաբանական ռիսկերի խելացի աուդիտ",
-        "select_plan": "Ընտրեք սակագինը.",
-        "one_time": "📄 Մեկանգամյա ստուգում",
-        "pro": "👑 Անսահմանափակ (Pro)",
-        "buy": "Գնել",
-        "upload": "Վերբեռնել PDF պայմանագիրը",
-        "demo_tab": "📝 Օրինակ",
-        "main_tab": "🚀 Վերլուծություն",
-        "free_advice": "💡 Խորհուրդ. Միշտ ստուգեք 'ֆորս մաժորի' և 'լուծարման կարգի' կետերը:",
-        "risk_score": "Ռիսկի գնահատականը՝ 7/10",
-        "bait_text": "Ցանկանու՞մ եք իմանալ, թե ինչու է ռիսկը բարձր: Գնեք ամբողջական հաշվետվությունը:"
+        "cur": "֏", "rate": USD_TO_AMD, "lang_code": "AM",
+        "title": "⚖️ JurisClear AI",
+        "subtitle": "Իրավաբանական աուդիտի նոր սերունդ",
+        "one_time": "Մեկանգամյա ստուգում", "pro": "Անսահմանափակ Pro",
+        "price_9": str(9 * USD_TO_AMD), "price_29": str(29 * USD_TO_AMD),
+        "buy": "Գնել", "upload": "Վերբեռնել PDF պայմանագիրը",
+        "demo_tab": "📝 Օրինակ", "main_tab": "🚀 Վերլուծություն",
+        "demo_content": "🔴 **Կրիտիկական ռիսկ:** 4.2 կետը թույլ է տալիս բարձրացնել գինը առանց ծանուցման:\n\n💡 **Խորհուրդ.** Պահանջեք 30-օրյա ծանուցման ժամկետ:",
+        "risk_wait": "Սպասում ենք փաստաթղթին...",
+        "mobile_tip": "Հեռախոսով օգտվելիս խորհուրդ է տրվում ուղղահայաց դիրքը:"
     }
 }
 
-# Настройка страницы
 st.set_page_config(page_title="JurisClear AI", page_icon="⚖️", layout="wide")
 
-# 2. ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА
-lang = st.sidebar.selectbox("🌐 Language / Язык / Լեզու", ["Русский", "English", "Հայերեն"])
-t = translations[lang]
+# 3. ШАПКА: ЛОГОТИП И ВЫБОР ЯЗЫКА
+head_left, head_right = st.columns([3, 1])
 
-# Твои ссылки
-link_9usd = "ТВОЯ_ССЫЛКА"
-link_29usd = "ТВОЯ_ССЫЛКА"
+with head_right:
+    lang_choice = st.selectbox("", ["Русский", "English", "Հայերեն"], label_visibility="collapsed")
+    t = translations[lang_choice]
 
-# Интерфейс
-st.markdown(f"<h1 style='text-align: center;'>{t['title']}</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: gray;'>{t['subtitle']}</p>", unsafe_allow_html=True)
+with head_left:
+    st.markdown(f"# {t['title']}")
+    st.markdown(f"*{t['subtitle']}*")
+
+st.divider()
+
+# 4. ТАРИФЫ (Адаптивные колонки)
+col1, col2 = st.columns(2)
+
+with col1:
+    st.info(f"### {t['one_time']}\n## {t['price_9']} {t['cur']}")
+    st.button(t['buy'], key="btn9", use_container_width=True)
+
+with col2:
+    st.success(f"### {t['pro']}\n## {t['price_29']} {t['cur']} / mo")
+    st.button(t['buy'], key="btn29", use_container_width=True)
 
 st.write("---")
 
-# Секция советов (Бесплатная ценность)
-st.info(t['free_advice'])
+# 5. ОСНОВНОЙ ФУНКЦИОНАЛ
+tab_main, tab_demo = st.tabs([t['main_tab'], t['demo_tab']])
 
-col1, col2 = st.columns([1, 1.2])
-
-with col1:
-    st.write(f"### {t['select_plan']}")
-    st.info(f"{t['one_time']}\n\n**$9**")
-    st.link_button(t['buy'], link_9usd, use_container_width=True)
-    
-    st.success(f"{t['pro']}\n\n**$29/мес**")
-    st.link_button(t['buy'], link_29usd, use_container_width=True)
-
-with col2:
-    tab_a, tab_b = st.tabs([t['main_tab'], t['demo_tab']])
-    with tab_a:
-        file = st.file_uploader(t['upload'], type="pdf")
-        if file:
-            st.write(f"### {t['risk_score']}")
-            st.warning(t['bait_text'])
-    with tab_b:
-        st.write("Пример отчета скоро появится здесь...")
-
-# Дополнительная секция "База знаний"
-with st.expander("❓ Часто задаваемые вопросы (FAQ)"):
-    if lang == "Русский":
-        st.write("1. Это заменяет юриста? - Нет, но это экономит время на базовую проверку.")
-        st.write("2. Мои данные в безопасности? - Да, мы не храним ваши файлы после анализа.")
-    elif lang == "English":
-        st.write("1. Does it replace a lawyer? - No, but it saves time on basic checks.")
-        st.write("2. Is my data safe? - Yes, we don't store your files after analysis.")
+with tab_main:
+    uploaded_file = st.file_uploader(t['upload'], type="pdf")
+    if uploaded_file:
+        st.toast("File uploaded!")
+        st.warning("🔒 Payment required to start AI engine.")
     else:
-        st.write("1. Արդյո՞ք սա փոխարինում է իրավաբանին: - Ոչ, բայց այն խնայում է ժամանակը:")
+        st.write(f"ℹ️ {t['risk_wait']}")
+
+with tab_demo:
+    st.markdown(f"### {t['demo_tab']}")
+    st.write(t['demo_content'])
+
+# 6. ФУТЕР ДЛЯ МОБИЛЬНЫХ
+st.divider()
+st.caption(f"JurisClear AI © 2026 | {t['mobile_tip']}")

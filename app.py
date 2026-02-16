@@ -3,8 +3,8 @@ from openai import OpenAI
 from PyPDF2 import PdfReader
 
 # --- 1. ТВОИ НАСТРОЙКИ ---
-LINK_9USD = "ВСТАВЬ_СЮДА_ССЫЛКУ_НА_9_ДОЛЛАРОВ"
-LINK_29USD = "ВСТАВЬ_СЮДА_ССЫЛКУ_НА_29_ДОЛЛАРОВ"
+LINK_9USD = "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61"
+LINK_29USD = "https://jurisclearai.lemonsqueezy.com/checkout/buy/69a180c9-d5f5-4018-9dbe-b8ac64e4ced8"
 
 try:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])

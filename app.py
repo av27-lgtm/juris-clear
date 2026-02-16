@@ -110,6 +110,18 @@ with tab1:
 with tab2:
     st.markdown(f"### {t['demo_tab']}")
     st.info(t['demo_content'])
+    # --- СКРЫВАЕМ БРЕНДИНГ STREAMLIT ---
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            .stApp [data-testid="stToolbar"] {display: none;}
+            /* Убираем кнопку Fullscreen в iframe */
+            button[title="View fullscreen"] {display: none;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 st.divider()
 f1, f2, f3 = st.columns(3)

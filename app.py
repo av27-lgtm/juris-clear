@@ -104,7 +104,7 @@ with col_b:
 
 st.divider()
 
-# >>> START OF CHANGE (Замена selectbox на pills — без курсора) <<<
+# >>> START OF CHANGE (Расширенные параметры анализа) <<<
 st.markdown("### ⚙️ Параметры анализа")
 c1, c2 = st.columns(2)
 
@@ -112,9 +112,9 @@ with c1:
     st.write("**Ваша роль:**")
     user_role = st.pills(
         "Роль", 
-        ["Заказчик (Покупатель)", "Исполнитель (Продавец)"], 
+        ["Заказчик", "Исполнитель", "Инвестор", "Арендодатель", "Арендатор"], 
         selection_mode="single", 
-        default="Заказчик (Покупатель)",
+        default="Заказчик",
         label_visibility="collapsed"
     )
 
@@ -122,7 +122,7 @@ with c2:
     st.write("**Тип документа:**")
     contract_type = st.pills(
         "Тип", 
-        ["Авто-определение", "Договор услуг", "NDA", "Аренда", "Поставка"], 
+        ["Авто-определение", "Услуги", "NDA", "Аренда", "Поставка", "Лицензия", "Трудовой"], 
         selection_mode="single", 
         default="Авто-определение",
         label_visibility="collapsed"

@@ -3,7 +3,7 @@ from openai import OpenAI
 from PyPDF2 import PdfReader
 import re
 
-# --- 1. CONFIG (ТЕХНИЧЕСКАЯ ЧАСТЬ) ---
+# --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
     page_title="JurisClear AI",
     page_icon="⚖️",
@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. ПОЛНЫЙ CSS ИНТЕРФЕЙСА ---
+# --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
@@ -35,7 +35,7 @@ st.markdown("""
         box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
     }
     
-    /* ОБЪЕМНЫЙ КОНТЕЙНЕР ДЛЯ ШКАЛЫ */
+    /* Объемный контейнер для шкалы риска */
     .risk-meter-container {
         background: #0f172a; border-radius: 15px; padding: 8px;
         box-shadow: inset 0 3px 8px rgba(0,0,0,0.6); border: 1px solid #334155; margin: 15px 0;
@@ -49,100 +49,68 @@ st.markdown("""
 
 # --- 3. ЛОГИКА ДИНАМИЧЕСКОЙ ШКАЛЫ ---
 def get_risk_params(score):
-    if score <= 3: # Низкий
-        return "linear-gradient(90deg, #059669 0%, #10b981 100%)", "rgba(16, 185, 129, 0.5)", "LOW"
-    elif score <= 6: # Средний
-        return "linear-gradient(90deg, #d97706 0%, #fbbf24 100%)", "rgba(251, 191, 36, 0.5)", "MEDIUM"
-    else: # Высокий
-        return "linear-gradient(90deg, #dc2626 0%, #ef4444 100%)", "rgba(239, 68, 68, 0.5)", "CRITICAL"
+    if score <= 3:
+        return "linear-gradient(90deg, #059669 0%, #10b981 100%)", "rgba(16, 185, 129, 0.5)", "НИЗКИЙ"
+    elif score <= 6:
+        return "linear-gradient(90deg, #d97706 0%, #fbbf24 100%)", "rgba(251, 191, 36, 0.5)", "СРЕДНИЙ"
+    else:
+        return "linear-gradient(90deg, #dc2626 0%, #ef4444 100%)", "rgba(239, 68, 68, 0.5)", "КРИТИЧЕСКИЙ"
 
-# --- 4. ИНИЦИАЛИЗАЦИЯ И ПРИМЕРЫ ---
+# --- 4. ПОДКЛЮЧЕНИЕ API И ПРИМЕР ---
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-sample_en = "### Summary: Software Agreement\n1. **IP Risk:** Background code ownership is unclear.\n2. **Termination:** 90-day notice is excessive.\n3. **Liability:** Capped too low ($500)."
-sample_ru = "### Резюме: Договор услуг\n1. **Цена:** Право менять стоимость в одностороннем порядке.\n2. **Штрафы:** 1% в день — это кабальные условия.\n3. **Суд:** Только по месту регистрации Исполнителя."
-sample_hy = "### Ամփոփում. Ծառայությունների պայմանագիր\n1. **Գաղտնիություն:** Ժամկետները նշված չեն:\n2. **Տուժանք:** 0.5% օրական, ինչը բարձր է:\n3. **Լուծարում:** Առանց նախնական ծանուցման:"
+sample_text = """
+### Резюме: Договор оказания услуг
+1. **Цена:** Обнаружено право Исполнителя менять стоимость в одностороннем порядке.
+2. **Штрафы:** Пени в размере 1% в день — это кабальные условия (в 10 раз выше нормы).
+3. **Разрешение споров:** Суд назначен только по месту регистрации Исполнителя, что затруднит защиту ваших прав.
+"""
 
-# --- 5. ТРАНСЛЯЦИИ ---
-translations = {
-    "English": {
-        "cur": "$", "p9": "9", "p29": "29", "mo": "/mo",
-        "one_time": "Single Audit", "pro": "Unlimited Pro",
-        "buy": "Get Full Access", "upload": "Drag and drop PDF contract",
-        "btn_run": "Run AI Analysis", "main_tab": "🚀 AI Audit", "demo_tab": "📝 See Demo",
-        "risk_label": "Dynamic AI Risk Score:", "wait": "Awaiting document...",
-        "pay_msg": "🔒 Unlock full remediation plan for {p}{c}",
-        "prompt": "Analyze this contract. List 3 risks. End with 'SCORE: X' (X=1-10). Language: English.",
-        "sample": sample_en
-    },
-    "Русский": {
-        "cur": "₽", "p9": "850", "p29": "2500", "mo": "/мес",
-        "one_time": "Разовый аудит", "pro": "Безлимит Pro",
-        "buy": "Купить доступ", "upload": "Загрузите PDF договор",
-        "btn_run": "Начать анализ", "main_tab": "🚀 ИИ Аудит", "demo_tab": "📝 Пример отчета",
-        "risk_label": "ИИ Оценка Риска:", "wait": "Загрузите файл...",
-        "pay_msg": "🔒 Открыть план устранения рисков за {p} {c}",
-        "prompt": "Проанализируй договор. 3 риска. В конце напиши 'SCORE: X' (X=1-10). Язык: Русский.",
-        "sample": sample_ru
-    },
-    "Հայերեն": {
-        "cur": "֏", "p9": "3500", "p29": "11000", "mo": "/ամիս",
-        "one_time": "Մեկանգամյա", "pro": "Անսահմանափակ Pro",
-        "buy": "Գնել", "upload": "Վերբեռնել PDF",
-        "btn_run": "Սկսել", "main_tab": "🚀 AI Աուդիտ", "demo_tab": "📝 Օրինակ",
-        "risk_label": "AI Ռիսկի ցուցանիշ.", "wait": "Վերբեռնեք ֆայլը...",
-        "pay_msg": "🔒 Բացել ամբողջական վերլուծությունը {p} {c}-ով",
-        "prompt": "Վերլուծիր պայմանագիրը: 3 ռիսկ: Վերջում գրիր 'SCORE: X' (X=1-10): Լեզուն՝ հայերեն:",
-        "sample": sample_hy
-    }
-}
-
-# --- 6. ИНТЕРФЕЙС ---
-c_lang, _ = st.columns([1, 2])
-with c_lang:
-    lang = st.selectbox("", ["English", "Русский", "Հայերեն"], label_visibility="collapsed")
-t = translations[lang]
-
+# --- 5. ИНТЕРФЕЙС ПРИЛОЖЕНИЯ ---
 st.markdown(f"<h1 style='text-align: center; color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray;'>Профессиональный юридический аудит договоров</p>", unsafe_allow_html=True)
 
-# Тарифы
+# Секция цен
 col_a, col_b = st.columns(2)
 with col_a:
-    st.markdown(f"<div class='pricing-card-single'><h3>{t['one_time']}</h3><h2>{t['p9']} {t['cur']}</h2></div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='pricing-card-single'><h3>Разовый аудит</h3><h2>850 ₽</h2></div>", unsafe_allow_html=True)
     st.write("")
-    st.link_button(t['buy'], "https://jurisclear.lemonsqueezy.com/...", use_container_width=True)
+    st.link_button("Купить доступ", "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
 with col_b:
-    st.markdown(f"<div class='pricing-card-pro'><h3>{t['pro']}</h3><h2>{t['p29']} {t['cur']} <small>{t['mo']}</small></h2></div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='pricing-card-pro'><h3>Безлимит Pro</h3><h2>2500 ₽ <small>/мес</small></h2></div>", unsafe_allow_html=True)
     st.write("")
-    st.link_button(t['buy'], "https://jurisclear.lemonsqueezy.com/...", use_container_width=True)
+    st.link_button("Купить доступ", "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
 
 st.divider()
 
-# Вкладки
-tab_audit, tab_demo = st.tabs([t['main_tab'], t['demo_tab']])
+# Рабочее пространство (Вкладки)
+tab_audit, tab_demo = st.tabs(["🚀 ИИ Аудит", "📝 Пример отчета"])
 
 with tab_audit:
-    file = st.file_uploader(t['upload'], type="pdf", label_visibility="collapsed")
+    file = st.file_uploader("Загрузите PDF договор", type="pdf", label_visibility="collapsed")
     if file:
-        if st.button(t['btn_run'], use_container_width=True, type="primary"):
-            with st.spinner("AI Analysis..."):
+        if st.button("Начать анализ", use_container_width=True, type="primary"):
+            with st.spinner("ИИ проводит глубокий юридический аудит..."):
                 reader = PdfReader(file)
                 text = "".join([p.extract_text() for p in reader.pages])
                 
+                # Запрос к ИИ с жестким требованием оценки
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": f"{t['prompt']}\n\n{text[:4000]}"}]
+                    messages=[{"role": "user", "content": f"Проанализируй договор. Выдели 3 самых критичных риска. В самом конце ответа обязательно напиши фразу 'SCORE: X' (где X — число от 1 до 10). Язык: Русский.\n\nТекст договора:\n{text[:4000]}"}]
                 )
                 raw_res = response.choices[0].message.content
                 
-                # Парсинг счета
+                # Парсинг оценки для шкалы
                 score_match = re.search(r"SCORE:\s*(\d+)", raw_res)
                 score = int(score_match.group(1)) if score_match else 5
-                clean_res = raw_res.replace(f"SCORE: {score}", "").strip()
+                # Чистим текст от технической метки SCORE
+                clean_res = re.sub(r"SCORE:\s*\d+", "", raw_res).strip()
                 
-                # Рендер шкалы
+                # Параметры динамической шкалы
                 bar_color, bar_shadow, risk_text = get_risk_params(score)
-                st.write(f"### {t['risk_label']}")
+                
+                st.write("### ИИ Оценка Риска:")
                 st.markdown(f"""
                     <div class="risk-meter-container">
                         <div style="height:35px; width:{score*10}%; background:{bar_color}; 
@@ -154,24 +122,26 @@ with tab_audit:
                 """, unsafe_allow_html=True)
                 
                 st.markdown(f"<div class='report-card'>{clean_res}</div>", unsafe_allow_html=True)
-                st.warning(t['pay_msg'].format(p=t['p9'], c=t['cur']))
+                
+                st.warning(f"🔒 Чтобы получить полный план устранения этих рисков, оплатите 850 ₽.")
+                st.link_button(f"👉 Оплатить и исправить риски", "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
     else:
-        st.info(t['wait'])
+        st.info("Пожалуйста, загрузите файл договора в формате PDF для начала анализа.")
 
 with tab_demo:
-    # Статичный пример для демо
+    st.write("### Так выглядит результат анализа:")
+    # Статичный пример для демонстрации
     bar_color, bar_shadow, risk_text = get_risk_params(9)
-    st.write(f"### {t['risk_label']}")
     st.markdown(f"""
         <div class="risk-meter-container">
             <div style="height:35px; width:90%; background:{bar_color}; 
             box-shadow: 0 4px 15px {bar_shadow}; border-radius:10px; 
             display:flex; align-items:center; justify-content:center; color:white; font-weight:900;">
-                CRITICAL (9/10)
+                КРИТИЧЕСКИЙ (9/10)
             </div>
         </div>
     """, unsafe_allow_html=True)
-    st.markdown(f"<div class='report-card'>{t['sample']}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='report-card'>{sample_text}</div>", unsafe_allow_html=True)
 
 st.divider()
-st.caption("© 2026 JurisClear AI | Yerevan | support@jurisclear.com")
+st.caption("© 2026 JurisClear AI | Ереван, Армения | support@jurisclear.com")

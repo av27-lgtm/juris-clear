@@ -127,7 +127,7 @@ with col_a:
         <h2>{t['p9']} {t['cur']}</h2>
     </div>""", unsafe_allow_html=True)
     st.write("")
-    st.link_button(t['buy'], "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
+    st.link_button(t['buy'], "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61", use_container_width=True)
 
 with col_b:
     st.markdown(f"""<div class='pricing-card-pro'>
@@ -135,7 +135,7 @@ with col_b:
         <h2>{t['p29']} {t['cur']} <small>{t['mo']}</small></h2>
     </div>""", unsafe_allow_html=True)
     st.write("")
-    st.link_button(t['buy'], "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
+    st.link_button(t['buy'], "https://jurisclearai.lemonsqueezy.com/checkout/buy/69a180c9-d5f5-4018-9dbe-b8ac64e4ced8", use_container_width=True)
 
 st.divider()
 
@@ -171,7 +171,7 @@ with tab_audit:
                 st.markdown(f"<div class='report-card'>{result}</div>", unsafe_allow_html=True)
                 
                 st.warning(t['pay_to_unlock'].format(p=t['p9'], c=t['cur']))
-                st.link_button(f"👉 {t['buy']} ({t['p9']} {t['cur']})", "https://jurisclear.lemonsqueezy.com/checkout/buy/...", use_container_width=True)
+                st.link_button(f"👉 {t['buy']} ({t['p9']} {t['cur']})", "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61", use_container_width=True)
     else:
         st.info(t['wait'])
 

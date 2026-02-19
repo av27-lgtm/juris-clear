@@ -217,7 +217,7 @@ with tab_audit:
                 free_part = parts[0]
                 paid_part = parts[1]
 
-                st.markdown(f<div class='report-card'>{free_part.strip()}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='report-card'>{free_part.strip()}</div>", unsafe_allow_html=True)
                 st.divider()
 
                 payment_url = "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61"

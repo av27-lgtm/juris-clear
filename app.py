@@ -146,6 +146,9 @@ with c2:
 tab_audit, tab_demo = st.tabs(["🚀 ИИ Аудит", "📝 Пример отчета"])
 
 with tab_audit:
+    if 'audit_result' not in st.session_state:
+    st.session_state.audit_result = None
+    
     file = st.file_uploader("Загрузите PDF договор", type="pdf", label_visibility="collapsed")
     if file:
         if st.button("Начать анализ", use_container_width=True, type="primary"):
@@ -243,6 +246,11 @@ with tab_audit:
                 clean_res = re.sub(r"SCORE:\s*\d+", "", raw_res).strip()
 
                 st.session_state.audit_result = clean_res  # Запоминаем результат анализа
+                st.rerun() # Сказали программе: "Эй, я всё сохранил, перерисуй экран!"
+
+# Если в памяти есть результат — показываем его всегда, даже после оплаты
+if st.session_state.audit_result:
+    res = st.session_state.audit_result
                 
                 # Параметры динамической шкалы
                 bar_color, bar_shadow, risk_text = get_risk_params(score)
@@ -259,35 +267,30 @@ with tab_audit:
                 """, unsafe_allow_html=True)
                 
                 # Проверяем, есть ли наша метка в тексте
-                if "[PAYWALL]" in clean_res:
-                    # Режем текст на две части
-                    parts = clean_res.split("[PAYWALL]")
-                    free_part = parts[0]
-                    paid_part = parts[1]
+        if "[PAYWALL]" in res:
+        parts = res.split("[PAYWALL]")
+        free_part = parts[0]
+        paid_part = parts[1]
 
-                    # 1. Показываем бесплатную часть (Анализ)
-                    st.markdown(f"<div class='report-card'>{free_part.strip()}</div>", unsafe_allow_html=True)
-                    
-                    st.divider() # Красивая линия-разделитель
-                    
-                    
-                    # 2. Логика проверки оплаты (Lemon Squeezy)
-                    # В реальности здесь будет запрос к API Lemon Squeezy или проверка параметров в URL
-                    # Для теста мы можем создать кнопку, которая ведет на твой Checkout
-                    payment_url = "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61" # Твоя ссылка
-                    
-                    # ПРОВЕРКА: Если оплата не подтверждена (в тестовом режиме можем временно оставить переключатель или проверять URL)
-                    if "paid" not in st.query_params: 
-                        st.warning("⚠️ Полный отчет и Протокол разногласий доступны после оплаты.")
-                        st.link_button("🚀 Оплатить Premium-доступ (850 ₽)", payment_url, use_container_width=True)
-                    else:
-                        # Этот блок сработает, только если в адресе сайта появится ?paid=true
-                        st.success("✅ Оплата подтверждена! Вам открыт полный доступ.")
-                        st.markdown(f"<div class='report-card'>{paid_part.strip()}</div>", unsafe_allow_html=True)
-                    
-                else:
-                    # Если вдруг метка пропала — просто выводим всё как раньше (безопасный режим)
-                    st.markdown(f"<div class='report-card'>{clean_res}</div>", unsafe_allow_html=True)
+        # Показываем бесплатный анализ
+        st.markdown(f"<div class='report-card'>{free_part.strip()}</div>", unsafe_allow_html=True)
+        
+        st.divider()
+        
+        payment_url = "https://jurisclearai.lemonsqueezy.com/checkout/buy/a06e3832-bc7a-4d2c-8f1e-113446b2bf61" # Твоя ссылка
+
+        # ПРОВЕРЯЕМ, ВЕРНУЛСЯ ЛИ КЛИЕНТ ПОСЛЕ ОПЛАТЫ
+        if st.query_params.get("paid") == "true":
+            st.success("✅ Оплата подтверждена! Вам открыт полный доступ.")
+            # Показываем ПЛАТНУЮ часть (таблицу)
+            st.markdown(f"<div class='report-card'>{paid_part.strip()}</div>", unsafe_allow_html=True)
+        else:
+            # Если оплаты еще нет в URL
+            st.warning("🔒 Полный отчет и Протокол разногласий доступны после оплаты.")
+            st.link_button("🚀 Оплатить Premium-доступ (850 ₽)", payment_url, use_container_width=True)
+    else:
+        # Если ИИ не поставил метку, просто выводим весь текст
+        st.markdown(f"<div class='report-card'>{res}</div>", unsafe_allow_html=True)
 
                 # >>> ВСТАВЛЯЙ СЮДА <<<
                 st.success("✅ Анализ и протокол разногласий успешно сформированы!")

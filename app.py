@@ -301,7 +301,7 @@ with tab_audit:
     else:
         st.info("Пожалуйста, загрузите файл договора в формате PDF для начала анализа.")
 
-st.rerun()
+
 
 # --- 1. КНОПКА (Только делает анализ и сохраняет) ---
 if st.button("Начать анализ", use_container_width=True, type="primary"):

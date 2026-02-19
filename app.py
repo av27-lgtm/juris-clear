@@ -244,7 +244,7 @@ with tab_audit:
                 # Чистим текст от технической метки SCORE
                 clean_res = re.sub(r"SCORE:\s*\d+", "", raw_res).strip()
 
-                
+                st.session_state.audit_result = clean_res  # Запоминаем результат анализа
                 
                 # Параметры динамической шкалы
                 bar_color, bar_shadow, risk_text = get_risk_params(score)

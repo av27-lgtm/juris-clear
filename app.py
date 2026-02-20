@@ -168,16 +168,21 @@ with tab_audit:
             with st.spinner("ИИ проводит глубокий юридический аудит..."):
                 #reader = PdfReader(file)
                 #text = "".join([p.extract_text() for p in reader.pages])
-                with pdfplumber.open(file) as pdf:
-                text = ""
-                for page in pdf.pages:
-                    page_text = page.extract_text()
-                    if page_text:
-                        text += page_text + "\n"
-                    else:
-                        # Если текст не извлекся (это скан), здесь можно подключить OCR
-                        st.warning("⚠️ Похоже, это скан. Пытаюсь распознать текст через OCR...")
-                        # В идеале тут вызывается Unstructured или EasyOCR
+                try:
+                    import pdfplumber
+                    with pdfplumber.open(file) as pdf:
+                        text = ""
+                        for page in pdf.pages:
+                            extracted = page.extract_text()
+                            if extracted:
+                                text += extracted + "\n"
+                    
+                    if not text.strip():
+                        st.error("❌ Не удалось извлечь текст. Возможно, это изображение или защищенный PDF.")
+                        st.stop()
+                except Exception as e:
+                    st.error(f"Ошибка при чтении PDF: {e}")
+                    st.stop()
                 
                 
                 # Запрос к ИИ с жестким требованием оценки

@@ -253,7 +253,7 @@ with tab_audit:
                     # --- ИНТЕГРАЦИЯ: СОХРАНЕНИЕ И ОБНОВЛЕНИЕ (ШАГ А, Б, В) ---
                     if clean_res:
                         try:
-                            # А. Сохраняем в Supabase (чтобы вебхук знал, что обновлять)
+                            # А. Сохраняем в Supabase
                             data = {
                                 "contract_type": contract_type, 
                                 "raw_analysis": clean_res,
@@ -261,25 +261,22 @@ with tab_audit:
                             }
                             insert_result = supabase.table("contract_audits").insert(data).execute()
                             
-                            # Б. КЛАДЕМ В ПАМЯТЬ СЕССИИ (чтобы отчет не исчезал)
+                            # Б. КЛАДЕМ В ПАМЯТЬ СЕССИИ
                             st.session_state.analysis_result = clean_res
                             st.session_state.current_audit_id = insert_result.data[0]['id']
-                            st.session_state.audit_score = score # Сохраняем оценку для шкалы
+                            st.session_state.audit_score = score
                             
-                            # В. Сразу принудительно обновляем страницу, чтобы сработал Шаг 2
+                            # В. Принудительно обновляем страницу
                             st.rerun()
                             
                         except Exception as e:
                             st.error(f"Ошибка при подготовке анализа: {e}")
         
         else:
-            # --- ШАГ 2: ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (срабатывает после rerun) ---
-            clean_res = st.session_state.analysis_result
-            current_audit_id = st.session_state.current_audit_id
+            # --- ШАГ 2: ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (Интегрированный код) ---
+            # Сохраняем логику отображения шкалы риска (не удаляем!)
             score = st.session_state.get("audit_score", 5)
-
             bar_color, bar_shadow, risk_text = get_risk_params(score)
-            
             st.write("### ИИ Оценка Риска:")
             st.markdown(f"""
                 <div class="risk-meter-container">
@@ -290,39 +287,60 @@ with tab_audit:
                     </div>
                 </div>
             """, unsafe_allow_html=True)
-            
+
+            # Достаем данные из «кармана»
+            clean_res = st.session_state.analysis_result
+            current_audit_id = st.session_state.current_audit_id
+
+            # Разрезаем текст по маркеру [PAYWALL]
             if "[PAYWALL]" in clean_res:
                 parts = clean_res.split("[PAYWALL]")
                 free_part = parts[0]
                 paid_part = parts[1]
 
+                # 1. Показываем бесплатную часть всем
                 st.markdown(f"<div class='report-card'>{free_part.strip()}</div>", unsafe_allow_html=True)
-                st.markdown("---")
+                st.divider()
 
-                with st.container():
+                # 2. ЖЕСТКАЯ ПРОВЕРКА ОПЛАТЫ (Только через базу!)
+                try:
                     check_db = supabase.table("contract_audits").select("payment_status").eq("id", current_audit_id).single().execute()
-                    is_paid = check_db.data.get("payment_status") == "paid"
+                    is_paid = (check_db.data.get("payment_status") == "paid")
+                except:
+                    is_paid = False
 
-                    if is_paid or st.query_params.get("paid") == "true":
-                        st.success("🎉 Доступ открыт! Оплата подтверждена.")
-                        st.markdown(f"<div class='report-card' style='border-left: 5px solid #28a745;'>{paid_part.strip()}</div>", unsafe_allow_html=True)
-                    else:
-                        st.warning("🔒 **Полный отчет и Протокол разногласий (готовые правки) заблокированы.**")
-                        col1, col2 = st.columns([2, 1])
-                        with col1:
-                            product_id = "a06e3832-bc7a-4d2c-8f1e-113446b2bf61" 
-                            payment_url = f"https://jurisclearai.lemonsqueezy.com/checkout/buy/{product_id}?checkout[custom][audit_id]={current_audit_id}"
-                            st.link_button("🚀 Оплатить Premium (850 ₽)", payment_url, use_container_width=True, type="primary")
-                        with col2:
-                            if st.button("🔄 Проверить оплату", use_container_width=True):
-                                st.rerun()
-                        st.info("💡 После оплаты нажмите кнопку 'Проверить оплату', если доступ не открылся автоматически.")
+                if is_paid:
+                    # ЕСЛИ ОПЛАЧЕНО
+                    st.success("✅ Оплата подтверждена! Вам открыт полный доступ.")
+                    st.markdown(f"<div class='report-card' style='border-left: 5px solid #28a745;'>{paid_part.strip()}</div>", unsafe_allow_html=True)
+                else:
+                    # ЕСЛИ НЕ ОПЛАЧЕНО
+                    st.warning("🔒 **Полный отчет и Протокол разногласий заблокированы.**")
+                    
+                    # Ссылка на оплату
+                    product_id = "a06e3832-bc7a-4d2c-8f1e-113446b2bf61" 
+                    payment_url = f"https://jurisclearai.lemonsqueezy.com/checkout/buy/{product_id}?checkout[custom][audit_id]={current_audit_id}"
+
+                    # Кнопка оплаты (одна под другой)
+                    st.link_button("🚀 Оплатить Premium-доступ (850 ₽)", 
+                                   payment_url, 
+                                   use_container_width=True, 
+                                   type="primary")
+                    
+                    st.write("") # Небольшой отступ
+
+                    # Кнопка обновления статуса
+                    if st.button("🔄 Проверить статус оплаты", use_container_width=True):
+                        st.rerun()
+                        
+                    st.info("💡 После оплаты нажмите кнопку выше, чтобы открыть отчет.")
             else:
+                # Если в ответе ИИ почему-то нет [PAYWALL], просто выводим всё
                 st.markdown(f"<div class='report-card'>{clean_res}</div>", unsafe_allow_html=True)
 
             st.success("✅ Анализ и протокол разногласий успешно сформированы!")
             
-            # Кнопка для сброса и нового анализа
+            # Кнопка для сброса и нового анализа (не удаляем!)
             if st.button("📁 Загрузить новый договор"):
                 for key in ["analysis_result", "current_audit_id", "audit_score"]:
                     if key in st.session_state: del st.session_state[key]

@@ -46,6 +46,14 @@ st.markdown("""
     .stButton>button {
         border-radius: 12px; height: 3.8em; font-weight: bold; transition: 0.3s;
     }
+    /* Выравнивание высоты кнопок оплаты и проверки */
+    div.stButton > button, div.stLinkButton > a {
+        min-height: 52px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 0px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 

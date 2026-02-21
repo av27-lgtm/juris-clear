@@ -174,7 +174,7 @@ with tab_audit:
         </div>
     """, unsafe_allow_html=True)
     
-    file = st.file_uploader("Загрузите PDF договор", type="pdf", label_visibility="collapsed")
+    file = st.file_uploader("Загрузите PDF договор", type="pdf", label_visibility="collapsed" key="file_uploader_main")
     if file:
         if "analysis_result" not in st.session_state:
             if st.button("Начать анализ", use_container_width=True, type="primary"):

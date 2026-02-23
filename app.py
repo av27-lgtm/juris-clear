@@ -193,7 +193,7 @@ with tab_audit:
         </div>
     """, unsafe_allow_html=True)
     
-    file = st.file_uploader("Загрузите PDF договор", type="pdf", label_visibility="collapsed")
+    file = st.file_uploader("Выберите файл договора (PDF)", type=['pdf'], key=f"uploader_{st.session_state.reset_counter}")
     if file:
         if "analysis_result" not in st.session_state:
             if st.button("Начать анализ", use_container_width=True, type="primary"):

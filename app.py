@@ -316,7 +316,7 @@ with tab_audit:
             <p style="font-size: 0.9em; line-height: 1.4; margin-bottom: 0;">
                 Данный сервис работает на базе искусственного интеллекта и <b>не является юридической консультацией</b>. 
                 ИИ может ошибаться, галлюцинировать или пропускать важные детали. 
-                Результаты анализа носят ознакомительный характер. Перед принятием решений обязательно 
+                Результаты анализа носят ознакоительный характер. Перед принятием решений обязательно 
                 <b>проконсультируйтесь с квалифицированным юристом</b>. 
                 Мы не несем ответственности за последствия использования данного инструмента.
             </p>
@@ -468,35 +468,33 @@ with tab_audit:
                     if is_paid:
                         st.balloons()
                         st.success("🎉 Оплата подтверждена!")
-                        st.markdown(f"<div class='report-card' style='border-left: 5px solid #28a745;'>{paid_part.strip()}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='report-card'>{paid_part.strip()}</div>", unsafe_allow_html=True)
                         
-                        # Ряд кнопок
-                        col_pdf, col_docx, col_sup = st.columns(3)
+                        # Три колонки для кнопок
+                        col_pdf, col_word, col_sup = st.columns(3)
+                        
                         with col_pdf:
-                            try:
-                                pdf_bytes = create_pdf(clean_res)
-                                st.download_button(
-                                    label="📥 Скачать PDF",
-                                    data=bytes(pdf_bytes),
-                                    file_name=f"audit_{current_audit_id[:8]}.pdf",
-                                    mime="application/pdf",
-                                    use_container_width=True
-                                )
-                            except Exception as e:
-                                st.error(f"Ошибка PDF: {e}")
+                            pdf_bytes = create_pdf(clean_res)
+                            st.download_button(
+                                label="📥 PDF",
+                                data=bytes(pdf_bytes),
+                                file_name=f"audit_{current_audit_id[:8]}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
                         
-                        with col_docx:
+                        with col_word:
                             try:
-                                docx_bytes = create_docx(clean_res)
+                                word_bytes = create_docx(clean_res)
                                 st.download_button(
-                                    label="📥 Скачать Word",
-                                    data=docx_bytes,
+                                    label="📝 Word",
+                                    data=word_bytes,
                                     file_name=f"audit_{current_audit_id[:8]}.docx",
                                     mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                                     use_container_width=True
                                 )
                             except Exception as e:
-                                st.error(f"Ошибка Word: {e}")
+                                st.error("Ошибка Word")
                         
                         with col_sup:
                             st.link_button("🆘 Поддержка", "https://t.me/твой_логин", use_container_width=True)

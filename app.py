@@ -4,6 +4,8 @@ from PyPDF2 import PdfReader
 import pdfplumber
 import re
 from supabase import create_client, Client  # Добавили импорт Supabase
+import os
+from fpdf import FPDF
 
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(

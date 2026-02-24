@@ -143,32 +143,39 @@ def sign_out():
     st.session_state.user = None
     st.rerun()
 
-# --- ФУНКЦИЯ ИЗВЛЕЧЕНИЯ ТЕКСТА (С ПОДДЕРЖКОЙ OCR) ---
+# --- ФУНКЦИЯ ИЗВЛЕЧЕНИЯ ТЕКСТА (ОБНОВЛЕННАЯ С OCR) ---
 def extract_text_from_pdf(file_bytes):
-    # 1. Пробуем обычный парсинг (быстро и чисто)
+    # 1. Сначала пробуем обычный текст (pdfplumber)
     text = ""
-    with pdfplumber.open(BytesIO(file_bytes)) as pdf:
-        for page in pdf.pages:
-            content = page.extract_text()
-            if content:
-                text += content + "\n"
-    
-    # 2. Если текста почти нет (меньше 100 символов), значит это скан
+    try:
+        with pdfplumber.open(BytesIO(file_bytes)) as pdf:
+            for page in pdf.pages:
+                content = page.extract_text()
+                if content:
+                    text += content + "\n"
+    except Exception as e:
+        st.error(f"Ошибка при чтении PDF: {e}")
+
+    # 2. Если текста почти нет — включаем OCR
     if len(text.strip()) < 100:
-        st.info("Обнаружен скан или фото. Включаю распознавание текста (OCR)...")
-        # Конвертируем PDF в изображения (каждая страница - картинка)
-        images = convert_from_bytes(file_bytes)
-        
-        ocr_text = ""
-        progress_ocr = st.progress(0)
-        for i, image in enumerate(images):
-            # Распознаем текст с картинки (поддерживаем русский и английский)
-            page_text = pytesseract.image_to_string(image, lang='rus+eng')
-            ocr_text += page_text + "\n"
-            progress_ocr.progress((i + 1) / len(images))
-        
-        progress_ocr.empty()
-        return ocr_text
+        st.info("Обнаружен скан или фото. Начинаю распознавание (OCR)... Это может занять 1-2 минуты.")
+        try:
+            # Превращаем PDF в картинки
+            images = convert_from_bytes(file_bytes)
+            
+            ocr_text = ""
+            progress_ocr = st.progress(0)
+            for i, image in enumerate(images):
+                # Распознаем текст (русский + английский)
+                page_text = pytesseract.image_to_string(image, lang='rus+eng')
+                ocr_text += f"--- Страница {i+1} ---\n{page_text}\n"
+                progress_ocr.progress((i + 1) / len(images))
+            
+            progress_ocr.empty()
+            return ocr_text
+        except Exception as e:
+            st.error(f"Ошибка OCR: {e}. Проверьте наличие tesseract в packages.txt")
+            return ""
     
     return text
 

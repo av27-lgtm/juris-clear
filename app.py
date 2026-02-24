@@ -31,12 +31,24 @@ st.markdown("""
     
     /* Контейнер страницы */
     .block-container {
-        padding-top: 2rem; 
+        padding-top: 1.5rem; 
         max-width: 1000px;
         font-family: 'Inter', -apple-system, sans-serif;
     }
 
-    /* Общие стили для карточек тарифов */
+    /* ВЫРАВНИВАНИЕ ХЕДЕРА (Лого и Вход) */
+    [data-testid="stHorizontalBlock"]:has(h1) {
+        align-items: center !important;
+    }
+    
+    /* Убираем лишние отступы у заголовка для точного центрирования */
+    h1 {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Карточки тарифов */
     .pricing-card-single, .pricing-card-pro {
         padding: 24px;
         border-radius: 16px;
@@ -50,13 +62,8 @@ st.markdown("""
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0,0,0,0.3);
     }
-    .pricing-card-single {
-        background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
-    }
-    .pricing-card-pro {
-        background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
-        border-color: #34d399;
-    }
+    .pricing-card-single { background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%); }
+    .pricing-card-pro { background: linear-gradient(135deg, #064e3b 0%, #059669 100%); border-color: #34d399; }
 
     /* Карточка отчета (эффект стекла) */
     .report-card {
@@ -66,29 +73,17 @@ st.markdown("""
         padding: 30px;
         border-radius: 16px;
         margin-top: 25px;
-        margin-bottom: 35px; /* ДОБАВЛЕН ОТСТУП СНИЗУ */
+        margin-bottom: 35px; /* Отступ от кнопок снизу */
         color: #f8fafc;
         line-height: 1.6;
         border-top: 1px solid rgba(255,255,255,0.05);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     
-    /* Дополнительный отступ для таблиц внутри отчета */
-    .report-card table {
-        margin-bottom: 20px !important;
-    }
+    /* Отступ для таблиц внутри отчета */
+    .report-card table { margin-bottom: 20px !important; }
 
-    /* Шкала риска */
-    .risk-meter-container {
-        background: #0f172a;
-        border-radius: 20px;
-        padding: 6px;
-        border: 1px solid #334155;
-        margin: 20px 0;
-        overflow: hidden;
-    }
-
-    /* УНИФИЦИРОВАННЫЕ КНОПКИ (Primary, Link, Download) */
+    /* КНОПКИ (Унификация) */
     .stButton > button, .stLinkButton > a, .stDownloadButton > button {
         display: inline-flex !important;
         align-items: center !important;
@@ -97,53 +92,36 @@ st.markdown("""
         width: 100% !important;
         border-radius: 12px !important;
         font-weight: 600 !important;
-        font-size: 16px !important;
-        letter-spacing: 0.3px !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.2s ease !important;
         border: none !important;
         text-decoration: none !important;
     }
 
-    /* Синяя кнопка (Оплата и Анализ) */
+    /* Основная синяя кнопка */
     .stButton > button[kind="primary"], .stLinkButton > a {
         background: #3b82f6 !important;
         color: white !important;
-        box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39) !important;
     }
     .stButton > button[kind="primary"]:hover, .stLinkButton > a:hover {
         background: #2563eb !important;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45) !important;
-        transform: scale(1.02);
+        transform: scale(1.01);
     }
 
-    /* Вторичная кнопка (Скачать, Сброс) */
+    /* Вторичная кнопка */
     .stDownloadButton > button, .stButton > button[kind="secondary"] {
         background: #334155 !important;
         color: #f1f5f9 !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-    }
-    .stDownloadButton > button:hover, .stButton > button[kind="secondary"]:hover {
-        background: #475569 !important;
-        border-color: #64748b !important;
     }
 
-    /* Улучшение читаемости табов */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-        background-color: transparent;
-    }
+    /* Стилизация табов */
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
     .stTabs [data-baseweb="tab"] {
         height: 45px;
-        white-space: pre;
         background-color: #1e293b;
         border-radius: 10px 10px 0 0;
         color: #94a3b8;
-        padding: 0 20px;
     }
-    .stTabs [aria-selected="true"] {
-        background-color: #3b82f6 !important;
-        color: white !important;
-    }
+    .stTabs [aria-selected="true"] { background-color: #3b82f6 !important; color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 

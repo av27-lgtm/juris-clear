@@ -133,7 +133,48 @@ sample_text = """
 """
 
 # --- 5. ИНТЕРФЕЙС ПРИЛОЖЕНИЯ ---
-st.markdown(f"<h1 style='text-align: center; color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
+
+# --- ХЕДЕР ПРИЛОЖЕНИЯ ---
+header_col1, header_col2 = st.columns([3, 1])
+
+with header_col1:
+    st.markdown(f"<h1 style='color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
+
+with header_col2:
+    # Если пользователь не вошел
+    if st.session_state.user is None:
+        with st.popover("👤 Войти", use_container_width=True):
+            tab_login, tab_signup = st.tabs(["Вход", "Регистрация"])
+            
+            with tab_login:
+                email = st.text_input("Email", key="login_email")
+                password = st.text_input("Пароль", type="password", key="login_pass")
+                if st.button("Войти", use_container_width=True, type="primary"):
+                    try:
+                        res = supabase.auth.sign_in_with_password({"email": email, "password": password})
+                        st.session_state.user = res.user
+                        st.success("Успешный вход!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error("Ошибка входа: проверьте данные")
+            
+            with tab_signup:
+                new_email = st.text_input("Email", key="reg_email")
+                new_pass = st.text_input("Пароль", type="password", key="reg_pass")
+                if st.button("Создать аккаунт", use_container_width=True):
+                    try:
+                        res = supabase.auth.sign_up({"email": new_email, "password": new_pass})
+                        st.info("Проверьте почту для подтверждения регистрации!")
+                    except Exception as e:
+                        st.error(f"Ошибка: {e}")
+    else:
+        # Если пользователь вошел
+        user_email = st.session_state.user.email
+        with st.popover(f"👤 {user_email[:10]}...", use_container_width=True):
+            st.write(f"Вы вошли как: **{user_email}**")
+            if st.button("Выйти", use_container_width=True):
+                sign_out()
+
 st.markdown("<p style='text-align: center; color: gray;'>Профессиональный юридический аудит договоров</p>", unsafe_allow_html=True)
 
 # Секция цен

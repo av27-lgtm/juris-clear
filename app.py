@@ -228,7 +228,7 @@ with c2:
     )
 
 # Рабочее пространство (Вкладки)
-tab_audit, tab_demo, tab_history = st.tabs(["🔍 Анализ договора", "✨ Демо-пример", "📁 Мои анализы"])
+tab_audit, tab_demo, tab_history = st.tabs(["🚀 ИИ Аудит", "📝 Пример отчета", "📜 История"])
 
 with tab_audit:
     # --- ЮРИДИЧЕСКИЙ ДИСКЛЕЙМЕР ---
@@ -457,6 +457,40 @@ with tab_demo:
         </div>
     """, unsafe_allow_html=True)
     st.markdown(f"<div class='report-card'>{sample_text}</div>", unsafe_allow_html=True)
+
+with tab_history:
+    st.subheader("📜 История ваших аудитов")
+    
+    if st.session_state.user is None:
+        st.warning("Пожалуйста, войдите в аккаунт, чтобы просмотреть историю своих анализов.")
+    else:
+        try:
+            # Запрашиваем из базы все анализы текущего пользователя
+            history = supabase.table("contract_audits") \
+                .select("*") \
+                .eq("user_id", st.session_state.user.id) \
+                .order("created_at", ascending=False) \
+                .execute()
+            
+            if not history.data:
+                st.info("У вас пока нет сохраненных анализов.")
+            else:
+                for audit in history.data:
+                    # Создаем аккуратную карточку для каждого старого анализа
+                    date_str = audit['created_at'][:10] # Берем только дату
+                    status = "✅ Оплачено" if audit['payment_status'] == 'paid' else "⏳ Ожидает оплаты"
+                    
+                    with st.expander(f"📄 {audit['contract_type']} от {date_str} — {status}"):
+                        # Показываем результат (если оплачено — весь, если нет — только начало)
+                        res_text = audit['raw_analysis']
+                        if "[PAYWALL]" in res_text and audit['payment_status'] != 'paid':
+                            st.markdown(res_text.split("[PAYWALL]")[0])
+                            st.warning("Этот отчет не оплачен. Оплатите его в основной вкладке, чтобы открыть полный доступ.")
+                        else:
+                            st.markdown(res_text.replace("[PAYWALL]", ""))
+                            
+        except Exception as e:
+            st.error(f"Не удалось загрузить историю: {e}")
 
 st.divider()
 st.caption("© 2026 JurisClear AI | Ереван, Армения | support@jurisclear.com")

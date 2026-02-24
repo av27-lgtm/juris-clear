@@ -234,7 +234,8 @@ with c1:
         ], 
         selection_mode="single", 
         default="Заказчик",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key=f"role_pills_{st.session_state.reset_counter}"
     )
 
 with c2:
@@ -250,7 +251,8 @@ with c2:
         ], 
         selection_mode="single", 
         default="Авто-определение",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key=f"type_pills_{st.session_state.reset_counter}"
     )
 
 # Рабочее пространство (Вкладки)

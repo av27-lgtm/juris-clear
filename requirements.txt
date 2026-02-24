@@ -5,6 +5,3 @@ pdfplumber
 supabase
 fpdf2
 python-docx
-pytesseract
-pdf2image
-Pillow

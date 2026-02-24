@@ -23,7 +23,6 @@ if 'user' not in st.session_state:
     st.session_state.user = None
 
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
-# --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
     /* Прячем стандартные элементы Streamlit */
@@ -67,10 +66,16 @@ st.markdown("""
         padding: 30px;
         border-radius: 16px;
         margin-top: 25px;
+        margin-bottom: 35px; /* ДОБАВЛЕН ОТСТУП СНИЗУ */
         color: #f8fafc;
         line-height: 1.6;
         border-top: 1px solid rgba(255,255,255,0.05);
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* Дополнительный отступ для таблиц внутри отчета */
+    .report-card table {
+        margin-bottom: 20px !important;
     }
 
     /* Шкала риска */

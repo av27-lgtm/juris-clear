@@ -12,8 +12,13 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
 if 'reset_counter' not in st.session_state:
     st.session_state.reset_counter = 0
+
+# --- ИНИЦИАЛИЗАЦИЯ ПОЛЬЗОВАТЕЛЯ ---
+if 'user' not in st.session_state:
+    st.session_state.user = None
 
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
@@ -93,6 +98,12 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 url: str = st.secrets["SUPABASE_URL"]
 key: str = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(url, key)
+
+# Функция для выхода
+def sign_out():
+    supabase.auth.sign_out()
+    st.session_state.user = None
+    st.rerun()
 
 # === НОВЫЙ ПРОФЕССИОНАЛЬНЫЙ ПРИМЕР ОТЧЕТА ===
 sample_text = """

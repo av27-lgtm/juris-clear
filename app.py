@@ -1,6 +1,5 @@
 import streamlit as st
 from openai import OpenAI
-from PyPDF2 import PdfReader
 import pdfplumber
 import re
 from supabase import create_client, Client  # Добавили импорт Supabase
@@ -183,9 +182,19 @@ def create_docx(text):
 
 # --- ФУНКЦИЯ ДЛЯ АНАЛИЗА ДЛИННЫХ ТЕКСТОВ ---
 def analyze_long_text(full_text, contract_type, user_role, special_instructions, prompt_instruction):
-    # 1. Разбиваем текст на части (примерно по 15,000 символов, чтобы не терять контекст)
-    chunk_size = 15000 
-    chunks = [full_text[i:i + chunk_size] for i in range(0, len(full_text), chunk_size)]
+    # Делим текст по абзацам, а не по символам
+    paragraphs = full_text.split('\n\n')
+    chunks = []
+    current_chunk = ""
+    
+    for p in paragraphs:
+        if len(current_chunk) + len(p) < 15000:
+            current_chunk += p + "\n\n"
+        else:
+            chunks.append(current_chunk)
+            current_chunk = p + "\n\n"
+    if current_chunk:
+        chunks.append(current_chunk)
     
     partial_analyses = []
     

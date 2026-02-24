@@ -143,6 +143,35 @@ def sign_out():
     st.session_state.user = None
     st.rerun()
 
+# --- ФУНКЦИЯ ИЗВЛЕЧЕНИЯ ТЕКСТА (С ПОДДЕРЖКОЙ OCR) ---
+def extract_text_from_pdf(file_bytes):
+    # 1. Пробуем обычный парсинг (быстро и чисто)
+    text = ""
+    with pdfplumber.open(BytesIO(file_bytes)) as pdf:
+        for page in pdf.pages:
+            content = page.extract_text()
+            if content:
+                text += content + "\n"
+    
+    # 2. Если текста почти нет (меньше 100 символов), значит это скан
+    if len(text.strip()) < 100:
+        st.info("Обнаружен скан или фото. Включаю распознавание текста (OCR)...")
+        # Конвертируем PDF в изображения (каждая страница - картинка)
+        images = convert_from_bytes(file_bytes)
+        
+        ocr_text = ""
+        progress_ocr = st.progress(0)
+        for i, image in enumerate(images):
+            # Распознаем текст с картинки (поддерживаем русский и английский)
+            page_text = pytesseract.image_to_string(image, lang='rus+eng')
+            ocr_text += page_text + "\n"
+            progress_ocr.progress((i + 1) / len(images))
+        
+        progress_ocr.empty()
+        return ocr_text
+    
+    return text
+
 # --- ФУНКЦИЯ СОЗДАНИЯ PDF (ИНТЕГРИРОВАНА НОВАЯ ПРОВЕРКА ШРИФТА) ---
 def create_pdf(text):
     pdf = FPDF()
@@ -400,15 +429,11 @@ with tab_audit:
             if st.button("Начать анализ", use_container_width=True, type="primary"):
                 with st.spinner("ИИ проводит глубокий юридический аудит..."):
                     try:
-                        with pdfplumber.open(file) as pdf:
-                            text = ""
-                            for page in pdf.pages:
-                                extracted = page.extract_text()
-                                if extracted:
-                                    text += extracted + "\n"
+                        # Используем новую функцию извлечения текста с поддержкой OCR
+                        text = extract_text_from_pdf(file.getvalue())
                         
                         if not text.strip():
-                            st.error("❌ Не удалось извлечь текст. Возможно, это изображение или защищенный PDF.")
+                            st.error("❌ Не удалось извлечь текст даже после OCR. Возможно, файл поврежден.")
                             st.stop()
                     except Exception as e:
                         st.error(f"Ошибка при чтении PDF: {e}")
@@ -658,16 +683,9 @@ with tab_redline:
     if file_v1 and file_v2:
         if st.button("🚀 Найти отличия", use_container_width=True):
             with st.spinner("ИИ сравнивает документы..."):
-                # Получаем текст из обоих файлов
-                text_v1 = ""
-                with pdfplumber.open(file_v1) as pdf:
-                    for page in pdf.pages:
-                        text_v1 += page.extract_text() + "\n"
-                
-                text_v2 = ""
-                with pdfplumber.open(file_v2) as pdf:
-                    for page in pdf.pages:
-                        text_v2 += page.extract_text() + "\n"
+                # Используем новую функцию извлечения для сравнения (с поддержкой OCR)
+                text_v1 = extract_text_from_pdf(file_v1.getvalue())
+                text_v2 = extract_text_from_pdf(file_v2.getvalue())
                 
                 # Промпт для сравнения
                 compare_prompt = f"""

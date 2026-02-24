@@ -80,6 +80,38 @@ st.markdown("""
         background-color: #2563eb !important;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
     }
+    /* Ультимативное выравнивание ВСЕХ кнопок: Обычных, Ссылок и Скачивания */
+    .stButton > button, .stLinkButton > a, .stDownloadButton > button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 50px !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 10px 20px !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+    }
+
+    /* Цвет для кнопки скачивания (сделаем её чуть отличной, например, серой или оставить синей) */
+    .stDownloadButton > button {
+        background-color: #1e293b !important; /* Темно-синий/серый */
+        color: white !important;
+    }
+    .stDownloadButton > button:hover {
+        background-color: #334155 !important;
+        border-color: #3b82f6 !important;
+    }
+    
+    /* Цвет для кнопки Оплатить (Primary) */
+    .stLinkButton > a {
+        background-color: #3b82f6 !important;
+        color: white !important;
+        border: none !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 

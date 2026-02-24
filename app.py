@@ -140,7 +140,7 @@ def sign_out():
     st.session_state.user = None
     st.rerun()
 
-# --- ФУНКЦИЯ СОЗДАНИЯ PDF (ОБНОВЛЕННАЯ ВЕРСИЯ) ---
+# --- ФУНКЦИЯ СОЗДАНИЯ PDF (ИНТЕГРИРОВАНА НОВАЯ ПРОВЕРКА ШРИФТА) ---
 def create_pdf(text):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15) # Авто-перенос страниц
@@ -149,11 +149,12 @@ def create_pdf(text):
     # Путь к шрифту
     font_path = "DejaVuSans.ttf" 
     
-    if os.path.exists(font_path):
-        pdf.add_font('DejaVu', '', font_path)
-        pdf.set_font('DejaVu', '', 12)
-    else:
-        pdf.set_font("Arial", size=10)
+    # Новая логика проверки из запроса
+    if not os.path.exists(font_path):
+        raise FileNotFoundError("Критическая ошибка: Шрифт для PDF не найден!")
+        
+    pdf.add_font('DejaVu', '', font_path)
+    pdf.set_font('DejaVu', '', 12)
     
     # Очищаем текст от технической метки
     clean_text = text.replace("[PAYWALL]", "").strip()

@@ -4,3 +4,4 @@ PyPDF2
 pdfplumber
 supabase
 fpdf2
+python-docx

@@ -327,11 +327,19 @@ with tab_audit:
 
                     if clean_res:
                         try:
+                            # --- НОВЫЙ БЛОК ДЛЯ USER_ID ---
+                            if st.session_state.user:
+                                user_id = st.session_state.user.id
+                            else:
+                                user_id = None 
+
                             data = {
                                 "contract_type": contract_type, 
                                 "raw_analysis": clean_res,
-                                "payment_status": "pending"
+                                "payment_status": "pending",
+                                "user_id": user_id # ДОБАВИЛИ ЭТУ СТРОКУ
                             }
+                            # ------------------------------
                             insert_result = supabase.table("contract_audits").insert(data).execute()
                             
                             st.session_state.analysis_result = clean_res

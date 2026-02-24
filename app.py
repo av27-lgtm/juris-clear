@@ -7,6 +7,9 @@ import os
 from fpdf import FPDF
 from docx import Document
 from io import BytesIO
+import pytesseract
+from pdf2image import convert_from_bytes
+from PIL import Image
 
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(

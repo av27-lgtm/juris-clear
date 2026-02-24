@@ -181,6 +181,64 @@ def create_docx(text):
     doc.save(bio)
     return bio.getvalue()
 
+# --- ФУНКЦИЯ ДЛЯ АНАЛИЗА ДЛИННЫХ ТЕКСТОВ ---
+def analyze_long_text(full_text, contract_type, user_role, special_instructions, prompt_instruction):
+    # 1. Разбиваем текст на части (примерно по 15,000 символов, чтобы не терять контекст)
+    chunk_size = 15000 
+    chunks = [full_text[i:i + chunk_size] for i in range(0, len(full_text), chunk_size)]
+    
+    partial_analyses = []
+    
+    # Индикатор прогресса для пользователя
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    for idx, chunk in enumerate(chunks):
+        status_text.text(f"Анализирую часть {idx+1} из {len(chunks)}...")
+        
+        prompt = (
+            f"Ты — опытный юрист. Проанализируй эту ЧАСТЬ договора ({idx+1}/{len(chunks)}). "
+            f"Тип: {contract_type}, Роль: {user_role}. {special_instructions}\n\n"
+            "Выдели только КРИТИЧЕСКИЕ риски и кабальные условия, которые видишь в этом куске.\n"
+            f"Текст части:\n{chunk}"
+        )
+        
+        response = client.chat.completions.create(
+            model="gpt-4o-mini", # Используем mini для промежуточных частей (быстрее и дешевле)
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.0
+        )
+        partial_analyses.append(response.choices[0].message.content)
+        progress_bar.progress((idx + 1) / len(chunks))
+
+    # 2. Финальная сборка отчета
+    status_text.text("Формирую итоговый отчет и протокол разногласий...")
+    
+    combined_context = "\n\n".join(partial_analyses)
+    
+    final_prompt = (
+        "Перед тобой промежуточные результаты анализа разных частей одного договора. "
+        "Твоя задача — объединить их в один профессиональный, структурированный отчет.\n\n"
+        "УДАЛИ повторы. СГРУППИРУЙ риски по категориям (Финансовые, Сроки, Ответственность).\n"
+        "СОСТАВЬ итоговую таблицу 'Протокол разногласий'.\n\n"
+        "СТРУКТУРА И ЯЗЫК ОТВЕТА ДОЛЖНЫ СТРОГО СООТВЕТСТВОВАТЬ ЭТАЛОНУ (с [PAYWALL] и SCORE).\n\n"
+        f"Промежуточные данные:\n{combined_context}"
+    )
+    
+    final_response = client.chat.completions.create(
+        model="gpt-4o", # Для финала используем мощную модель
+        messages=[
+            {"role": "system", "content": prompt_instruction}, # Используем твой основной системный промпт
+            {"role": "user", "content": final_prompt}
+        ],
+        temperature=0.0
+    )
+    
+    status_text.empty()
+    progress_bar.empty()
+    
+    return final_response.choices[0].message.content
+
 # === НОВЫЙ ПРОФЕССИОНАЛЬНЫЙ ПРИМЕР ОТЧЕТА ===
 sample_text = """
 ### 📋 КРАТКОЕ РЕЗЮМЕ АУДИТА: ДОГОВОР ОКАЗАНИЯ УСЛУГ
@@ -389,16 +447,9 @@ with tab_audit:
                         "Язык: Русский."
                     )
 
-                    response = client.chat.completions.create(
-                        model="gpt-4o",
-                        messages=[
-                            {"role": "system", "content": prompt_instruction},
-                            {"role": "user", "content": f"Текст договора:\n{text[:10000]}"}
-                        ],
-                        temperature=0.0
-                    )
+                    # Используем новую функцию для анализа длинного текста
+                    raw_res = analyze_long_text(text, contract_type, user_role, special_instructions, prompt_instruction)
                     
-                    raw_res = response.choices[0].message.content
                     score_match = re.search(r"SCORE:\s*(\d+)", raw_res)
                     score = int(score_match.group(1)) if score_match else 5
                     clean_res = re.sub(r"SCORE:\s*\d+", "", raw_res).strip()

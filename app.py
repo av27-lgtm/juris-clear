@@ -23,94 +23,121 @@ if 'user' not in st.session_state:
     st.session_state.user = None
 
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
+# --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
+    /* Прячем стандартные элементы Streamlit */
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
-    .block-container {padding-top: 1.5rem; max-width: 1000px;}
     
-    /* Тарифные планы */
-    .pricing-card-single {
-        background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
-        padding: 20px; border-radius: 15px; border: 1px solid #60a5fa; text-align: center; color: white;
-    }
-    .pricing-card-pro {
-        background: linear-gradient(135deg, #064e3b 0%, #10b981 100%);
-        padding: 20px; border-radius: 15px; border: 1px solid #34d399; text-align: center; color: white;
-    }
-    
-    /* Карточка отчета */
-    .report-card {
-        background-color: #1e293b; border-left: 5px solid #3b82f6;
-        padding: 25px; border-radius: 12px; margin-top: 20px; color: #f1f5f9;
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-    }
-    
-    /* Объемный контейнер для шкалы риска */
-    .risk-meter-container {
-        background: #0f172a; border-radius: 15px; padding: 8px;
-        box-shadow: inset 0 3px 8px rgba(0,0,0,0.6); border: 1px solid #334155; margin: 15px 0;
-    }
-    
-    .stButton>button {
-        border-radius: 12px; height: 3.8em; font-weight: bold; transition: 0.3s;
-    }
-    /* Ультимативное выравнивание кнопок */
-    .stButton > button, .stLinkButton > a {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        height: 50px !important; /* Фиксированная высота */
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border-radius: 10px !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease !important;
+    /* Контейнер страницы */
+    .block-container {
+        padding-top: 2rem; 
+        max-width: 1000px;
+        font-family: 'Inter', -apple-system, sans-serif;
     }
 
-    /* Цвет для кнопки-ссылки (Оплатить), чтобы она была как Primary */
-    .stLinkButton > a {
-        background-color: #3b82f6 !important;
-        color: white !important;
-        border: none !important;
+    /* Общие стили для карточек тарифов */
+    .pricing-card-single, .pricing-card-pro {
+        padding: 24px;
+        border-radius: 16px;
+        text-align: center;
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .stLinkButton > a:hover {
-        background-color: #2563eb !important;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+    .pricing-card-single:hover, .pricing-card-pro:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
     }
-    /* Ультимативное выравнивание ВСЕХ кнопок: Обычных, Ссылок и Скачивания */
+    .pricing-card-single {
+        background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+    }
+    .pricing-card-pro {
+        background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+        border-color: #34d399;
+    }
+
+    /* Карточка отчета (эффект стекла) */
+    .report-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border-left: 6px solid #3b82f6;
+        padding: 30px;
+        border-radius: 16px;
+        margin-top: 25px;
+        color: #f8fafc;
+        line-height: 1.6;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Шкала риска */
+    .risk-meter-container {
+        background: #0f172a;
+        border-radius: 20px;
+        padding: 6px;
+        border: 1px solid #334155;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    /* УНИФИЦИРОВАННЫЕ КНОПКИ (Primary, Link, Download) */
     .stButton > button, .stLinkButton > a, .stDownloadButton > button {
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: 50px !important;
+        height: 52px !important;
         width: 100% !important;
-        margin: 0 !important;
-        padding: 10px 20px !important;
-        border-radius: 10px !important;
-        text-decoration: none !important;
+        border-radius: 12px !important;
         font-weight: 600 !important;
-        transition: all 0.3s ease !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
+        font-size: 16px !important;
+        letter-spacing: 0.3px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border: none !important;
+        text-decoration: none !important;
     }
 
-    /* Цвет для кнопки скачивания (сделаем её чуть отличной, например, серой или оставить синей) */
-    .stDownloadButton > button {
-        background-color: #1e293b !important; /* Темно-синий/серый */
+    /* Синяя кнопка (Оплата и Анализ) */
+    .stButton > button[kind="primary"], .stLinkButton > a {
+        background: #3b82f6 !important;
         color: white !important;
+        box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39) !important;
     }
-    .stDownloadButton > button:hover {
-        background-color: #334155 !important;
-        border-color: #3b82f6 !important;
+    .stButton > button[kind="primary"]:hover, .stLinkButton > a:hover {
+        background: #2563eb !important;
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45) !important;
+        transform: scale(1.02);
     }
-    
-    /* Цвет для кнопки Оплатить (Primary) */
-    .stLinkButton > a {
+
+    /* Вторичная кнопка (Скачать, Сброс) */
+    .stDownloadButton > button, .stButton > button[kind="secondary"] {
+        background: #334155 !important;
+        color: #f1f5f9 !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .stDownloadButton > button:hover, .stButton > button[kind="secondary"]:hover {
+        background: #475569 !important;
+        border-color: #64748b !important;
+    }
+
+    /* Улучшение читаемости табов */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background-color: transparent;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 45px;
+        white-space: pre;
+        background-color: #1e293b;
+        border-radius: 10px 10px 0 0;
+        color: #94a3b8;
+        padding: 0 20px;
+    }
+    .stTabs [aria-selected="true"] {
         background-color: #3b82f6 !important;
         color: white !important;
-        border: none !important;
     }
     </style>
     """, unsafe_allow_html=True)

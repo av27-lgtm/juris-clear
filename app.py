@@ -136,6 +136,8 @@ client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 url: str = st.secrets["SUPABASE_URL"]
 key: str = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(url, key)
+# Используем Service Role Key, чтобы обойти проблемы с JWT в Streamlit
+supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SERVICE_KEY"))
 
 # Функция для выхода
 def sign_out():

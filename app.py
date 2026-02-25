@@ -443,12 +443,15 @@ with tab_audit:
             if st.button("Начать анализ", use_container_width=True, type="primary"):
                 with st.spinner("ИИ проводит глубокий юридический аудит..."):
                     try:
-                        # Используем новую функцию извлечения текста с поддержкой OCR
-                        text = extract_text_from_pdf(file.getvalue())
-                        
+                        # --- ИНТЕГРИРОВАННЫЙ КУСОЧЕК КОДА ---
+                        file_bytes = file.read() # Считываем байты один раз
+                        text = extract_text_from_pdf(file_bytes)
+
                         if not text.strip():
-                            st.error("❌ Не удалось извлечь текст даже после OCR. Возможно, файл поврежден.")
+                            st.error("Не удалось извлечь текст из документа. Возможно, файл поврежден или пуст.")
                             st.stop()
+                        # -----------------------------------
+                        
                     except Exception as e:
                         st.error(f"Ошибка при чтении PDF: {e}")
                         st.stop()

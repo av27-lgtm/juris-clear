@@ -32,6 +32,13 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
+
+    /* УБИРАЕМ ЯКОРЯ (ЦЕПОЧКИ) И КНОПКИ ЗАГОЛОВКОВ */
+    [data-testid="stMarkdownHeader"] a, 
+    [data-testid="stHeaderActionElements"],
+    button[kind="header_action"] {
+        display: none !important;
+    }
     
     /* Тарифные планы */
     .pricing-card-single {

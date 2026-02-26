@@ -28,6 +28,18 @@ if 'user' not in st.session_state:
 
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
+<script>
+    // Находим все якоря и удаляем их из документа
+    const removeAnchors = () => {
+        const anchors = document.querySelectorAll('a.header-anchor');
+        anchors.forEach(el => el.remove());
+        const actionElements = document.querySelectorAll('[data-testid="stHeaderActionElements"]');
+        actionElements.forEach(el => el.remove());
+    };
+    
+    // Запускаем проверку каждые полсекунды (на случай, если Streamlit их перерисует)
+    setInterval(removeAnchors, 500);
+</script>
     <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}

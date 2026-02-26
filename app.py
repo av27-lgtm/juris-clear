@@ -11,9 +11,6 @@ import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
 
-st.title("ПРОВЕРКА СВЯЗИ!")
-st.write(f"ВЕРСИЯ: {st.__version__}")
-
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
     page_title="JurisClear AI",
@@ -331,7 +328,7 @@ sample_text = """
 header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
-    st.markdown(f"<h1 style='color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='color: white;'>⚖️ My website <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
 
 with header_col2:
     # Если пользователь не вошел

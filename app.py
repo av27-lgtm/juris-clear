@@ -33,30 +33,9 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-     /* 1. Скрываем контейнер иконок-якорей (самый современный метод) */
-[data-testid="stHeaderActionElements"] {
-    display: none !important;
-}
-
-/* 2. Скрываем все ссылки внутри заголовков любого уровня */
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-    display: none !important;
-}
-
-/* 3. Скрываем конкретно иконки якорей (SVG) */
-svg.header-anchor-icon {
-    display: none !important;
-}
-
-/* 4. Скрываем ссылки с классом anchor */
-.header-anchor {
-    display: none !important;
-}
-
-/* 5. Убираем кнопки действий в заголовках markdown */
-.stMarkdown [data-testid="stHeaderActionElements"] {
-    display: none !important;
-}
+    [data-testid="stHeaderActionElements"] {
+        display: none;
+    }
     
     /* Тарифные планы */
     .pricing-card-single {

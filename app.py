@@ -329,9 +329,9 @@ header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
     st.markdown("""
-        <div style='font-size: 42px; font-weight: 800; color: white; line-height: 1.2; margin-bottom: 10px;'>
-            ⚖️ JurisClear <span style='color:#3b82f6'>AI</span>
-        </div>
+        <p style='font-size: 42px !important; font-weight: 800 !important; color: white !important; margin: 0 !important; line-height: 1.2 !important;'>
+            ⚖️ JurisClear <span style='color:#3b82f6;'>AI</span>
+        </p>
     """, unsafe_allow_html=True)
 
 with header_col2:

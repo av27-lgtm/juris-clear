@@ -385,7 +385,7 @@ st.markdown("### ⚙️ Параметры анализа")
 c1, c2 = st.columns(2)
 
 with c1:
-    st.write("**Ваша роль:**")
+    st.markdown("**Ваша роль:**")
     user_role = st.pills(
         "Роль", 
         [

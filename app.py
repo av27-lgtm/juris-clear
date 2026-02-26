@@ -10,6 +10,7 @@ from io import BytesIO
 import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
+import streamlit.components.v1 as components
 
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
@@ -328,11 +329,16 @@ sample_text = """
 header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
-    st.markdown("""
-        <p style='font-size: 42px !important; font-weight: 800 !important; color: white !important; margin: 0 !important; line-height: 1.2 !important;'>
-            ⚖️ JurisClear <span style='color:#3b82f6;'>AI</span>
-        </p>
-    """, unsafe_allow_html=True)
+    # Используем компонент, который Streamlit не сможет "прочитать" и добавить якоря
+    components.html(
+        """
+        <div style="font-family: 'Source Sans Pro', sans-serif; margin-top: -10px;">
+            <span style="font-size: 40px; font-weight: 800; color: white;">⚖️ JurisClear </span>
+            <span style="font-size: 40px; font-weight: 800; color: #3b82f6;">AI</span>
+        </div>
+        """,
+        height=70,
+    )
 
 with header_col2:
     # Если пользователь не вошел

@@ -33,18 +33,24 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-    /* Полностью скрываем иконки-цепочки (якоря) у заголовков */
-    .stMarkdown h1 a, 
-    .stMarkdown h2 a, 
-    .stMarkdown h3 a, 
-    .stMarkdown h4 a, 
-    .stMarkdown h5 a, 
-    .stMarkdown h6 a {
+    /* Полностью убираем иконки-якоря у всех заголовков */
+    [data-testid="stMarkdownHeader"] a {
         display: none !important;
     }
     
-    /* Дополнительно убираем отступ, который они оставляли */
-    [data-testid="stMarkdownHeader"] a {
+    /* Скрываем ссылки внутри всех уровней заголовков */
+    h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    
+    /* Убираем возможные кнопки-якоря (в новых версиями Streamlit) */
+    .stMarkdown [data-testid="stMarkdownHeader"] > a {
+        display: none !important;
+    }
+    
+    /* Дополнительная очистка от мусора в заголовках */
+    .header-anchor {
         display: none !important;
     }
     

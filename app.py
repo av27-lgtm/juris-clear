@@ -33,23 +33,21 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-    /* Убираем все кнопки действий рядом с заголовками */
-button[kind="header_action"] {
-    display: none !important;
-}
+    /* 1. ПОЛНОЕ УДАЛЕНИЕ ЦЕПОЧЕК (ЯКОРЕЙ) */
+    [data-testid="stMarkdownHeader"] a, 
+    .header-anchor, 
+    svg.header-anchor-icon, 
+    button[kind="header_action"],
+    [data-testid="stHeaderActionElements"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
 
-/* Скрываем ссылки внутри заголовков через прозрачность и размер */
-[data-testid="stMarkdownHeader"] a {
-    opacity: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
-    pointer-events: none !important;
-}
-
-/* Точечный удар по SVG иконкам внутри ссылок-якорей */
-[data-testid="stMarkdownHeader"] a svg {
-    display: none !important;
-}
+    /* 2. УБИРАЕМ ЛИШНИЕ ОТСТУПЫ */
+    [data-testid="stMarkdownHeader"] {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
     
     /* Тарифные планы */
     .pricing-card-single {

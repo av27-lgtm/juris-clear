@@ -1,5 +1,4 @@
 import streamlit as st
-st.write(f"Моя текущая версия Streamlit: {st.__version__}")
 from openai import OpenAI
 import pdfplumber
 import re
@@ -11,6 +10,9 @@ from io import BytesIO
 import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
+
+st.title("ПРОВЕРКА СВЯЗИ!")
+st.write(f"ВЕРСИЯ: {st.__version__}")
 
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(

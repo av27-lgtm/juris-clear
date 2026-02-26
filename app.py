@@ -11,8 +11,6 @@ import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
 
-st.write(f"Моя текущая версия Streamlit: {st.__version__}")
-
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
     page_title="JurisClear AI",
@@ -20,6 +18,8 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+st.write(f"Моя текущая версия Streamlit: {st.__version__}")
 
 if 'reset_counter' not in st.session_state:
     st.session_state.reset_counter = 0

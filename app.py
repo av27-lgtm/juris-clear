@@ -29,6 +29,21 @@ if 'user' not in st.session_state:
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
+    /* Скрыть контейнер с иконками-якорями (самый эффективный способ для новых версий) */
+[data-testid="stHeaderActionElements"] {
+    display: none !important;
+}
+
+/* Скрыть ссылки-якоря, если они представлены кнопками .section-anchor */
+.section-anchor {
+    display: none !important;
+}
+
+/* На всякий случай скрываем SVG внутри заголовков маркдауна */
+.stMarkdown h1 button, .stMarkdown h2 button, .stMarkdown h3 button {
+    display: none !important;
+}
+    
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}

@@ -10,7 +10,6 @@ from io import BytesIO
 import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
-import streamlit.components.v1 as components
 
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
@@ -329,21 +328,7 @@ sample_text = """
 header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
-    # Используем span вместо div/h1. Span — это строчный элемент, 
-    # на который Streamlit никогда не вешает якоря.
-    st.markdown("""
-        <span style='
-            display: block; 
-            font-size: 42px; 
-            font-weight: 800; 
-            color: white; 
-            line-height: 1.2; 
-            margin-bottom: 10px;
-            font-family: sans-serif;
-        '>
-            ⚖️ JurisClear <span style='color:#3b82f6;'>AI</span>
-        </span>
-    """, unsafe_allow_html=True)
+    st.markdown(f"<h1 style='color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
 
 with header_col2:
     # Если пользователь не вошел

@@ -29,31 +29,6 @@ if 'user' not in st.session_state:
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
-    /* 1. Прячем ссылки-якоря по их классу и атрибуту */
-.stMarkdown a.header-anchor {
-    display: none !important;
-}
-
-/* 2. Прячем SVG-иконки внутри заголовков (те самые цепочки) */
-.stMarkdown h1 a svg, .stMarkdown h2 a svg, .stMarkdown h3 a svg, 
-.stMarkdown h4 a svg, .stMarkdown h5 a svg, .stMarkdown h6 a svg {
-    display: none !important;
-}
-
-/* 3. Убираем эффект наведения, который иногда оставляет пустое место */
-.stMarkdown h1:hover a, .stMarkdown h2:hover a, .stMarkdown h3:hover a {
-    display: none !important;
-}
-
-/* 4. Принудительно обнуляем отступы, которые Streamlit добавляет для этих иконок */
-[data-testid="stMarkdownContainer"] h1 a, 
-[data-testid="stMarkdownContainer"] h2 a, 
-[data-testid="stMarkdownContainer"] h3 a {
-    display: none !important;
-    width: 0 !important;
-    margin: 0 !important;
-}
-    
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}

@@ -36,6 +36,11 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
+
+    /* Скрываем иконку ссылки рядом с заголовками */
+    [data-testid="stHeaderActionElements"] {
+        display: none;
+    }
     
     /* Тарифные планы */
     .pricing-card-single {

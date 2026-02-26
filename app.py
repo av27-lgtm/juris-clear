@@ -329,16 +329,21 @@ sample_text = """
 header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
-    # Используем компонент, который Streamlit не сможет "прочитать" и добавить якоря
-    components.html(
-        """
-        <div style="font-family: 'Source Sans Pro', sans-serif; margin-top: -10px;">
-            <span style="font-size: 40px; font-weight: 800; color: white;">⚖️ JurisClear </span>
-            <span style="font-size: 40px; font-weight: 800; color: #3b82f6;">AI</span>
-        </div>
-        """,
-        height=70,
-    )
+    # Используем span вместо div/h1. Span — это строчный элемент, 
+    # на который Streamlit никогда не вешает якоря.
+    st.markdown("""
+        <span style='
+            display: block; 
+            font-size: 42px; 
+            font-weight: 800; 
+            color: white; 
+            line-height: 1.2; 
+            margin-bottom: 10px;
+            font-family: sans-serif;
+        '>
+            ⚖️ JurisClear <span style='color:#3b82f6;'>AI</span>
+        </span>
+    """, unsafe_allow_html=True)
 
 with header_col2:
     # Если пользователь не вошел

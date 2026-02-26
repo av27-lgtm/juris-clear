@@ -33,7 +33,16 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-    
+    .st-emotion-cache-1majbkv a {
+    color: rgb(61, 157, 243);
+    text-decoration: underline;
+    display: none;
+}
+.st-emotion-cache-2fgyt4 a {
+    color: rgb(61, 157, 243);
+    text-decoration: underline;
+    display: none;
+}
     
     /* Тарифные планы */
     .pricing-card-single {

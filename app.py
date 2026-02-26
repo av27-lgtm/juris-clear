@@ -29,7 +29,11 @@ if 'user' not in st.session_state:
 # --- 2. ВЕСЬ ДИЗАЙН (CSS) ---
 st.markdown("""
     <style>
-      /* 1. Скрываем контейнер иконок-якорей (самый современный метод) */
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    [data-testid="stHeader"] {display: none;}
+    .block-container {padding-top: 1.5rem; max-width: 1000px;}
+
+     /* 1. Скрываем контейнер иконок-якорей (самый современный метод) */
 [data-testid="stHeaderActionElements"] {
     display: none !important;
 }
@@ -53,15 +57,6 @@ svg.header-anchor-icon {
 .stMarkdown [data-testid="stHeaderActionElements"] {
     display: none !important;
 }
-
-a.anchor {
-    opacity: 0;
-    pointer-events: none; /* Чтобы нельзя было случайно нажать */
-}
-    
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
-    [data-testid="stHeader"] {display: none;}
-    .block-container {padding-top: 1.5rem; max-width: 1000px;}
     
     /* Тарифные планы */
     .pricing-card-single {

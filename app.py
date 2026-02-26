@@ -1,4 +1,5 @@
 import streamlit as st
+st.write(f"Моя текущая версия Streamlit: {st.__version__}")
 from openai import OpenAI
 import pdfplumber
 import re
@@ -18,8 +19,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-
-st.write(f"Моя текущая версия Streamlit: {st.__version__}")
 
 if 'reset_counter' not in st.session_state:
     st.session_state.reset_counter = 0

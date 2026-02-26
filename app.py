@@ -11,6 +11,8 @@ import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
 
+st.write(f"Моя текущая версия Streamlit: {st.__version__}")
+
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
     page_title="JurisClear AI",

@@ -32,6 +32,24 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
+
+    /* Убираем все кнопки действий рядом с заголовками */
+button[kind="header_action"] {
+    display: none !important;
+}
+
+/* Скрываем ссылки внутри заголовков через прозрачность и размер */
+[data-testid="stMarkdownHeader"] a {
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Точечный удар по SVG иконкам внутри ссылок-якорей */
+[data-testid="stMarkdownHeader"] a svg {
+    display: none !important;
+}
     
     /* Тарифные планы */
     .pricing-card-single {

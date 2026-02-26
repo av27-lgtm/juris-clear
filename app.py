@@ -33,7 +33,7 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-    .st-emotion-cache-gi0tri e1t8ru6f3 {
+    .stHeaderActionElements {
         display: none;
     }
     

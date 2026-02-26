@@ -18,8 +18,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-st.title("Заголовок без цепочки", anchor=False)
-st.header("Секция без якоря", anchor=False)
 
 if 'reset_counter' not in st.session_state:
     st.session_state.reset_counter = 0
@@ -383,7 +381,7 @@ with col_b:
 st.divider()
 
 # Параметры анализа
-st.markdown("### ⚙️ Параметры анализа")
+st.write("### ⚙️ Параметры анализа")
 c1, c2 = st.columns(2)
 
 with c1:

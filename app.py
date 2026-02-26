@@ -32,22 +32,6 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
-
-    /* 1. ПОЛНОЕ УДАЛЕНИЕ ЦЕПОЧЕК (ЯКОРЕЙ) */
-    [data-testid="stMarkdownHeader"] a, 
-    .header-anchor, 
-    svg.header-anchor-icon, 
-    button[kind="header_action"],
-    [data-testid="stHeaderActionElements"] {
-        display: none !important;
-        visibility: hidden !important;
-    }
-
-    /* 2. УБИРАЕМ ЛИШНИЕ ОТСТУПЫ */
-    [data-testid="stMarkdownHeader"] {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
     
     /* Тарифные планы */
     .pricing-card-single {
@@ -344,12 +328,7 @@ sample_text = """
 header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
-    #st.markdown(f"<h1 style='color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
-            st.markdown("""
-                <div style='font-size: 40px; font-weight: 800; color: white; margin-bottom: 0px;'>
-                    ⚖️ JurisClear <span style='color:#3b82f6'>AI</span>
-                </div>
-            """, unsafe_allow_html=True)
+    st.markdown(f"<h1 style='color: white;'>⚖️ JurisClear <span style='color:#3b82f6'>AI</span></h1>", unsafe_allow_html=True)
 
 with header_col2:
     # Если пользователь не вошел

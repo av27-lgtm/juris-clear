@@ -57,6 +57,11 @@ svg.header-anchor-icon {
 .stMarkdown [data-testid="stHeaderActionElements"] {
     display: none !important;
 }
+
+a.anchor {
+    opacity: 0;
+    pointer-events: none; /* Чтобы нельзя было случайно нажать */
+}
     
     /* Тарифные планы */
     .pricing-card-single {

@@ -11,10 +11,6 @@ import pytesseract
 from pdf2image import convert_from_bytes
 from PIL import Image
 
-st.title("Мой заголовок без цепочки", anchor=False)
-st.header("Здесь тоже нет ссылки", anchor=False)
-st.subheader("И тут пусто", anchor=False)
-
 # --- 1. НАСТРОЙКА СТРАНИЦЫ ---
 st.set_page_config(
     page_title="JurisClear AI",
@@ -36,11 +32,6 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
-
-    /* Скрываем иконку ссылки рядом с заголовками */
-    [data-testid="stHeaderActionElements"] {
-        display: none;
-    }
     
     /* Тарифные планы */
     .pricing-card-single {

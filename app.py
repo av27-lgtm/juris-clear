@@ -33,9 +33,22 @@ st.markdown("""
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
 
-    /* УБИРАЕМ ЯКОРЯ (ЦЕПОЧКИ) И КНОПКИ ЗАГОЛОВКОВ */
-    [data-testid="stMarkdownHeader"] a, 
-    [data-testid="stHeaderActionElements"],
+    /* 1. Полностью скрываем контейнер с кнопками действий (цепочки, ссылки) */
+    [data-testid="stHeaderActionElements"] {
+        display: none !important;
+    }
+
+    /* 2. Скрываем ссылки-якоря внутри всех заголовков Markdown */
+    [data-testid="stMarkdownHeader"] a {
+        display: none !important;
+    }
+
+    /* 3. Убираем лишние отступы справа, которые резервируются под иконки */
+    [data-testid="stMarkdownHeader"] {
+        padding-right: 0 !important;
+    }
+
+    /* 4. На всякий случай: скрываем кнопки заголовков старого образца */
     button[kind="header_action"] {
         display: none !important;
     }

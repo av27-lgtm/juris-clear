@@ -32,23 +32,6 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
     [data-testid="stHeader"] {display: none;}
     .block-container {padding-top: 1.5rem; max-width: 1000px;}
-
-    /* Скрывает контейнеры с кнопками-якорями у заголовков */
-    [data-testid="stHeaderActionElements"], 
-    .st-emotion-cache-15zrgzn, 
-    .st-emotion-cache-eczf16 {
-        display: none !important;
-    }
-    
-    /* Скрывает ссылки внутри заголовков (h1-h6) */
-    h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-        display: none !important;
-    }
-    
-    /* Убирает отступ, который резервируется под иконку */
-    [data-testid="stMarkdownContainer"] a {
-        display: none !important;
-    }
     
     /* Тарифные планы */
     .pricing-card-single {

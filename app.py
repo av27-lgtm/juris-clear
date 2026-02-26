@@ -381,7 +381,7 @@ with col_b:
 st.divider()
 
 # Параметры анализа
-st.markdown(" ⚙️ Параметры анализа")
+st.markdown("### ⚙️ Параметры анализа")
 c1, c2 = st.columns(2)
 
 with c1:
